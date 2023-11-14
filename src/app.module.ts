@@ -10,6 +10,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { setUser } from '@sentry/node';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
+import { HttpModule } from '@nestjs/axios';
 
 const lowSeverityLevels: SeverityLevel[] = ['log', 'info'];
 
@@ -29,6 +30,7 @@ const lowSeverityLevels: SeverityLevel[] = ['log', 'info'];
     },
   ],
   imports: [
+    HttpModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SentryModule.forRootAsync({
       imports: [ConfigModule],
