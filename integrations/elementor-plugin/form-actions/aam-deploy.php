@@ -71,8 +71,8 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 					'name' => $fields['name'],
 					'username' => $fields['username'],
 					'email' => $fields['email'],
-					'monitor' => True,
-					'backend' => True,
+					'monitor' => $settings['monitor'] ? True : False,
+					'backend' => $settings['backend'] ? True : False,
 					'apiKey' => $settings['api-key'],
 					'base' => $settings['base'],
 				]),
@@ -128,6 +128,24 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 				'label' => esc_html__( 'Base', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
 				'description' => esc_html__( 'Enter the configuration which should be the basis.', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
+			'backend',
+			[
+				'label' => esc_html__( 'Add permissions backend', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'description' => esc_html__( 'Allows to define permissions.', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
+			'monitor',
+			[
+				'label' => esc_html__( 'Add monitoring', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'description' => esc_html__( 'Adds uptime monitoring for the deployment.', 'elementor-forms-aam-deploy' ),
 			]
 		);
 
