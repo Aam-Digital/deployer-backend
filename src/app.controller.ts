@@ -22,8 +22,8 @@ export class AppController {
   async deployApp(@Body() deploymentInfo: DeploymentInfo) {
     const data = new URLSearchParams();
     data.set('grant_type', 'client_credentials');
-    data.set('client_id', deploymentInfo.apiName);
-    data.set('client_secret', deploymentInfo.apiKey);
+    data.set('client_id', deploymentInfo.client);
+    data.set('client_secret', deploymentInfo.clientKey);
     return this.http
       .post(
         `${this.keycloakUrl}/realms/master/protocol/openid-connect/token`,

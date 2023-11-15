@@ -4,7 +4,7 @@ export class DeploymentInfo {
   email: string;
   backend: boolean;
   monitor: boolean;
-  apiName: string;
-  apiKey: string;
+  client: string;
+  clientKey: string;
   base: string;
 }

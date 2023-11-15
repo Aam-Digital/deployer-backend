@@ -73,7 +73,8 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 					'email' => $fields['email'],
 					'monitor' => $settings['monitor'] ? True : False,
 					'backend' => $settings['backend'] ? True : False,
-					'apiKey' => $settings['api-key'],
+					'client' => $settings['client'],
+					'clientKey' => $settings['client-key'],
 					'base' => $settings['base'],
 				]),
 				'httpversion' => '1.0',
@@ -114,11 +115,20 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 		);
 
 		$widget->add_control(
-			'api-key',
+			'client',
 			[
-				'label' => esc_html__( 'API Key', 'elementor-forms-aam-deploy' ),
+				'label' => esc_html__( 'Client name', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter your deployment API key.', 'elementor-forms-aam-deploy' ),
+				'description' => esc_html__( 'Enter you client name.', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
+			'client-key',
+			[
+				'label' => esc_html__( 'Client key', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'description' => esc_html__( 'Enter you secret client key.', 'elementor-forms-aam-deploy' ),
 			]
 		);
 
@@ -161,6 +171,11 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 	 * @access public
 	 * @param array $element
 	 */
-	public function on_export( $element ) {}
+	public function on_export( $element ) {
+	    unset(
+            $element['client-key'],
+        );
 
+        return $element;
+    }
 }
