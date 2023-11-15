@@ -42,6 +42,7 @@ export class AppController {
 
   private writeCommandsToPipe(deploymentInfo: DeploymentInfo) {
     console.log('info', deploymentInfo);
+    // TODO prevent spaces in properties
     const args = `${deploymentInfo.name} ${deploymentInfo.email} ${
       deploymentInfo.username
     } ${deploymentInfo.backend ? 'y' : 'n'} ${

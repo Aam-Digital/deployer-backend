@@ -60,6 +60,22 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			$fields[ $id ] = $field['value'];
 		}
 
+		$has_error = False;
+
+		if ( str_contains( $fields['name'] , ' ' ) ) {
+            $ajax_handler->add_error( 'name', 'No spaces allowed.' );
+			$has_error = True;
+		}
+
+		if ( str_contains( $fields['username'] , ' ' ) ) {
+            $ajax_handler->add_error( 'username', 'No spaces allowed.' );
+			$has_error = True;
+		}
+
+		if ( $has_error == True ) {
+			return False;
+		}
+
 		$res = wp_remote_post(
 			$settings['remote-url'],
 			[
