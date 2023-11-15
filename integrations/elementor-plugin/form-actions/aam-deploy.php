@@ -60,7 +60,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			$fields[ $id ] = $field['value'];
 		}
 
-		wp_remote_post(
+		$res = wp_remote_post(
 			$settings['remote-url'],
 			[
 				'method' => 'POST',
@@ -82,6 +82,10 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			]
 		);
 
+        if ( is_wp_error( $res ) || $res['response']['code'] >= 400 ) {
+            $ajax_handler->add_error( '', 'Server error. Please contact system administrator.' );
+			return False;
+        }
 	}
 
 	/**
