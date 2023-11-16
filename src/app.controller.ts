@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpStatus,
@@ -19,7 +20,7 @@ export class AppController {
     private configService: ConfigService,
   ) {}
   @Post('deploy')
-  async deployApp(@Body() deploymentInfo: DeploymentInfo) {
+  deployApp(@Body() deploymentInfo: DeploymentInfo) {
     const data = new URLSearchParams();
     data.set('grant_type', 'client_credentials');
     data.set('client_id', deploymentInfo.client);
@@ -30,19 +31,25 @@ export class AppController {
         data,
       )
       .pipe(
-        map(() => this.writeCommandsToPipe(deploymentInfo)),
         catchError((err) => {
           if (err?.status !== HttpStatus.UNAUTHORIZED) {
             throw new UnauthorizedException();
           }
           throw err;
         }),
+        map(() => this.writeCommandsToPipe(deploymentInfo)),
       );
   }
 
   private writeCommandsToPipe(deploymentInfo: DeploymentInfo) {
     console.log('info', deploymentInfo);
-    // TODO prevent spaces in properties
+
+    if (
+      Object.values(deploymentInfo).some((val) => val.toString().includes(' '))
+    ) {
+      throw new BadRequestException('No spaces allowed in arguments');
+    }
+
     const args = `${deploymentInfo.name} ${deploymentInfo.email} ${
       deploymentInfo.username
     } ${deploymentInfo.backend ? 'y' : 'n'} ${
