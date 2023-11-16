@@ -1,8 +1,6 @@
-name: Main Update
-on:
-  push:
-    branches:
-      - main
+name: PR Update
+on: pull_request
+
 jobs:
   publish-image:
     runs-on: ubuntu-latest
@@ -22,8 +20,6 @@ jobs:
           context: ./
           file: ./build/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: aamdigital/deployer-ms:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
