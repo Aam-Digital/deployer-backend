@@ -68,7 +68,7 @@ describe('AppController', () => {
     await firstValueFrom(controller.deployApp(delpoymentData));
 
     expect(mockWs.write).toHaveBeenCalledWith(
-      'test-name test@mail.com test-username y n test-base',
+      'test-name test@mail.com test-username test-base y n',
     );
     expect(mockWs.close).toHaveBeenCalled();
   });

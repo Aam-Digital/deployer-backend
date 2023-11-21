@@ -52,9 +52,9 @@ export class AppController {
 
     const args = `${deploymentInfo.name} ${deploymentInfo.email} ${
       deploymentInfo.username
-    } ${deploymentInfo.backend ? 'y' : 'n'} ${
+    } ${deploymentInfo.base} ${deploymentInfo.backend ? 'y' : 'n'} ${
       deploymentInfo.monitor ? 'y' : 'n'
-    } ${deploymentInfo.base}`;
+    }`;
     console.log('args', args);
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);
