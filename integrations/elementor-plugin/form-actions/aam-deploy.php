@@ -92,6 +92,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 					'client' => $settings['client'],
 					'clientKey' => $settings['client-key'],
 					'base' => $settings['base'],
+					'locale' => $settings['locale'],
 				]),
 				'httpversion' => '1.0',
 				'timeout' => 60,
@@ -149,6 +150,16 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 				'label' => esc_html__( 'Client key', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
 				'description' => esc_html__( 'Enter you secret client key.', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
+			'locale',
+			[
+				'label' => esc_html__( 'Language', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'description' => esc_html__( 'Enter the default language for the deployed app ("en", "de",...).', 'elementor-forms-aam-deploy' ),
+				'default' => 'en'
 			]
 		);
 

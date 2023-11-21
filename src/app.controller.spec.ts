@@ -10,8 +10,9 @@ import * as fs from 'fs';
 describe('AppController', () => {
   let controller: AppController;
   let mockHttp: { post: jest.Mock };
-  const delpoymentData: DeploymentInfo = {
+  const deploymentData: DeploymentInfo = {
     name: 'test-name',
+    locale: 'de',
     username: 'test-username',
     email: 'test@mail.com',
     client: 'test-client',
@@ -42,7 +43,7 @@ describe('AppController', () => {
       throwError(() => new UnauthorizedException()),
     );
 
-    controller.deployApp(delpoymentData).subscribe({
+    controller.deployApp(deploymentData).subscribe({
       error: (err) => {
         expect(err).toBeInstanceOf(UnauthorizedException);
         done();
@@ -51,7 +52,7 @@ describe('AppController', () => {
   });
 
   it('should throw bad request exception if data has wrong format', (done) => {
-    const invalidData = { ...delpoymentData, name: 'with space' };
+    const invalidData = { ...deploymentData, name: 'with space' };
 
     controller.deployApp(invalidData).subscribe({
       error: (err) => {
@@ -65,11 +66,29 @@ describe('AppController', () => {
     const mockWs = { write: jest.fn(), close: jest.fn() };
     jest.spyOn(fs, 'createWriteStream').mockReturnValue(mockWs as any);
 
-    await firstValueFrom(controller.deployApp(delpoymentData));
+    await firstValueFrom(controller.deployApp(deploymentData));
 
     expect(mockWs.write).toHaveBeenCalledWith(
-      'test-name test@mail.com test-username test-base y n',
+      'test-name de test@mail.com test-username test-base y n',
     );
     expect(mockWs.close).toHaveBeenCalled();
+  });
+
+  it('should use the default locale if empty or omitted', async () => {
+    const mockWs = { write: jest.fn(), close: jest.fn() };
+    jest.spyOn(fs, 'createWriteStream').mockReturnValue(mockWs as any);
+
+    const withoutLocale = { ...deploymentData, locale: '' };
+    await firstValueFrom(controller.deployApp(withoutLocale));
+    expect(mockWs.write).toHaveBeenCalledWith(
+      'test-name en test@mail.com test-username test-base y n',
+    );
+
+    mockWs.write.mockReset();
+    delete withoutLocale.locale;
+    await firstValueFrom(controller.deployApp(withoutLocale));
+    expect(mockWs.write).toHaveBeenCalledWith(
+      'test-name en test@mail.com test-username test-base y n',
+    );
   });
 });
