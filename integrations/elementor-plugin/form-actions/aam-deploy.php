@@ -140,7 +140,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			[
 				'label' => esc_html__( 'Client name', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter you client name.', 'elementor-forms-aam-deploy' ),
+				'description' => esc_html__( 'Enter your client name (i.e. ???).', 'elementor-forms-aam-deploy' ),
 			]
 		);
 
@@ -149,7 +149,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			[
 				'label' => esc_html__( 'Client key', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter you secret client key.', 'elementor-forms-aam-deploy' ),
+				'description' => esc_html__( 'Enter your secret client key (API token).', 'elementor-forms-aam-deploy' ),
 			]
 		);
 
@@ -158,7 +158,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			[
 				'label' => esc_html__( 'Language', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter the default language for the deployed app ("en", "de",...).', 'elementor-forms-aam-deploy' ),
+				'description' => esc_html__( 'Enter the default language for the deployed app ("en", "de", ...).', 'elementor-forms-aam-deploy' ),
 				'default' => 'en'
 			]
 		);
