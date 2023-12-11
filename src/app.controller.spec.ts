@@ -53,6 +53,7 @@ describe('AppController', () => {
 
   it('should throw bad request exception if data has wrong format', (done) => {
     const invalidData = { ...deploymentData, name: 'with space' };
+    // TODO: add an extensive list of invalid formats including attempts someone could pass to try and inject code?
 
     controller.deployApp(invalidData).subscribe({
       error: (err) => {
