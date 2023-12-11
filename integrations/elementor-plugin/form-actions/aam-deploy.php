@@ -140,7 +140,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			[
 				'label' => esc_html__( 'Client name', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'description' => esc_html__( 'Enter your client name (i.e. ???).', 'elementor-forms-aam-deploy' ),
+				'description' => esc_html__( 'Enter your client name.', 'elementor-forms-aam-deploy' ),
 			]
 		);
 
