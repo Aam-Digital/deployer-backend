@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   HttpStatus,
+  InternalServerErrorException,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,7 +11,8 @@ import { DeploymentInfo } from './deployment-info.dto';
 import * as fs from 'fs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { catchError, map } from 'rxjs';
+import { catchError, mergeMap, Observable, Subject } from 'rxjs';
+import { Tail } from 'tail';
 
 @Controller()
 export class AppController {
@@ -37,11 +39,11 @@ export class AppController {
           }
           throw err;
         }),
-        map(() => this.writeCommandsToPipe(deploymentInfo)),
+        mergeMap(() => this.writeCommandsToPipe(deploymentInfo)),
       );
   }
 
-  private writeCommandsToPipe(deploymentInfo: DeploymentInfo) {
+  private writeCommandsToPipe(deploymentInfo: DeploymentInfo): Observable<any> {
     console.log('info', deploymentInfo);
 
     if (
@@ -59,6 +61,25 @@ export class AppController {
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);
     ws.close();
-    return { ok: true };
+    return this.getResult();
+  }
+
+  private getResult() {
+    const result = new Subject();
+    // TODO adjust path and document
+    const tail = new Tail('../ndb-setup/deployer/deploy-log.txt');
+    tail.on('line', (line: string) => {
+      if (line.startsWith('ERROR')) {
+        result.error(new InternalServerErrorException(line));
+        result.complete();
+        tail.unwatch();
+      } else if (line.startsWith('DONE')) {
+        result.next({ ok: true });
+        result.complete();
+        tail.unwatch();
+      }
+    });
+
+    return result.asObservable();
   }
 }

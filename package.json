@@ -31,7 +31,8 @@
     "@sentry/node": "^7.38.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "tail": "^2.2.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.2.0",
@@ -41,6 +42,7 @@
     "@types/jest": "^29.4.0",
     "@types/node": "^18.13.0",
     "@types/supertest": "^2.0.12",
+    "@types/tail": "^2.2.3",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "eslint": "^8.34.0",
