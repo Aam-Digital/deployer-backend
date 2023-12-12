@@ -67,13 +67,14 @@ export class AppController {
     const result = new Subject();
     const tail = new Tail('dist/assets/log.txt');
     tail.on('line', (line: string) => {
-      console.log('processing line', line);
       if (line.startsWith('ERROR')) {
+        // Error found, text after error is returned
         const message = line.replace('ERROR ', '');
         result.error(new BadRequestException(message));
         result.complete();
         tail.unwatch();
       } else if (line.startsWith('DONE')) {
+        // Success, app is deployed
         result.next({ ok: true });
         result.complete();
         tail.unwatch();

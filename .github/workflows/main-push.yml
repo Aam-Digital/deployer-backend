@@ -26,3 +26,5 @@ jobs:
           tags: aamdigital/deployer-ms:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            RUN_TESTS=${{ true }}
