@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   HttpStatus,
-  InternalServerErrorException,
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -66,11 +65,12 @@ export class AppController {
 
   private getResult() {
     const result = new Subject();
-    // TODO adjust path and document
-    const tail = new Tail('../ndb-setup/deployer/deploy-log.txt');
+    const tail = new Tail('dist/assets/log.txt');
     tail.on('line', (line: string) => {
+      console.log('processing line', line);
       if (line.startsWith('ERROR')) {
-        result.error(new InternalServerErrorException(line));
+        const message = line.replace('ERROR ', '');
+        result.error(new BadRequestException(message));
         result.complete();
         tail.unwatch();
       } else if (line.startsWith('DONE')) {
