@@ -70,14 +70,14 @@ export class AppController {
       if (line.startsWith('ERROR')) {
         // Error found, text after error is returned
         const message = line.replace('ERROR ', '');
+        tail.unwatch();
         result.error(new BadRequestException(message));
         result.complete();
-        tail.unwatch();
       } else if (line.startsWith('DONE')) {
         // Success, app is deployed
+        tail.unwatch();
         result.next({ ok: true });
         result.complete();
-        tail.unwatch();
       }
     });
 
