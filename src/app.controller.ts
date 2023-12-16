@@ -10,7 +10,8 @@ import { DeploymentInfo } from './deployment-info.dto';
 import * as fs from 'fs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { catchError, map } from 'rxjs';
+import { catchError, mergeMap, Observable, Subject } from 'rxjs';
+import { Tail } from 'tail';
 
 @Controller()
 export class AppController {
@@ -37,12 +38,30 @@ export class AppController {
           }
           throw err;
         }),
-        map(() => this.writeCommandsToPipe(deploymentInfo)),
+        mergeMap(() => this.writeCommandsToPipe(deploymentInfo)),
       );
   }
 
-  private writeCommandsToPipe(deploymentInfo: DeploymentInfo) {
+  private writeCommandsToPipe(deploymentInfo: DeploymentInfo): Observable<any> {
     console.log('info', deploymentInfo);
+
+    if (!deploymentInfo.name.match(/^[a-zA-Z0-9\-]*$/)) {
+      throw new BadRequestException(
+        'Only letters, numbers and dashes are allowed in name',
+      );
+    }
+
+    if (!deploymentInfo.username.match(/^[a-zA-Z0-9\-]*$/)) {
+      throw new BadRequestException(
+        'Only letters, numbers and dashes are allowed in username',
+      );
+    }
+
+    // See https://regex101.com/r/lHs2R3/1
+    const emailRegex = /^[\w\-.]+@([\w-]+\.)+[\w-]{2,}$/;
+    if (!deploymentInfo.email.match(emailRegex)) {
+      throw new BadRequestException('Not a valid email');
+    }
 
     if (
       Object.values(deploymentInfo).some((val) => val.toString().includes(' '))
@@ -59,6 +78,26 @@ export class AppController {
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);
     ws.close();
-    return { ok: true };
+    return this.getResult();
+  }
+
+  private getResult() {
+    const result = new Subject();
+    const tail = new Tail('dist/assets/log.txt');
+    tail.on('line', (line: string) => {
+      if (line.startsWith('ERROR')) {
+        // Error found, text after error is returned
+        const message = line.replace('ERROR ', '');
+        tail.unwatch();
+        result.error(new BadRequestException(message));
+        result.complete();
+      } else if (line.startsWith('DONE')) {
+        // Success, app is deployed
+        tail.unwatch();
+        result.next({ ok: true });
+        result.complete();
+      }
+    });
+    return result.asObservable();
   }
 }

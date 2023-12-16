@@ -100,7 +100,13 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 		);
 
         if ( is_wp_error( $res ) || $res['response']['code'] >= 400 ) {
-            $ajax_handler->add_error( '', 'Server error. Please contact system administrator.' );
+            // $res['body'] is a stringified JSON
+            // Checkout the interactive setup script for possible errors
+            if ( str_contains( $res['body'] , 'name already exists' ) ) {
+                $ajax_handler->add_error( 'name', 'Name already exists.' );
+            } else {
+                $ajax_handler->add_error_message( 'Server error. Please contact system administrator.' );
+            }
 			return False;
         }
 	}
