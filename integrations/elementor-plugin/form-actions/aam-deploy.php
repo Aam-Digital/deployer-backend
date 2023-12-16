@@ -60,22 +60,6 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			$fields[ $id ] = $field['value'];
 		}
 
-		$has_error = False;
-
-		if ( str_contains( $fields['name'] , ' ' ) ) {
-            $ajax_handler->add_error( 'name', 'No spaces allowed.' );
-			$has_error = True;
-		}
-
-		if ( str_contains( $fields['username'] , ' ' ) ) {
-            $ajax_handler->add_error( 'username', 'No spaces allowed.' );
-			$has_error = True;
-		}
-
-		if ( $has_error == True ) {
-			return False;
-		}
-
 		$res = wp_remote_post(
 			$settings['remote-url'],
 			[
@@ -101,11 +85,17 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 
         if ( is_wp_error( $res ) || $res['response']['code'] >= 400 ) {
             // $res['body'] is a stringified JSON
-            // Checkout the interactive setup script for possible errors
+            // Checkout the interactive setup script and the deployer backend for possible errors
             if ( str_contains( $res['body'] , 'name already exists' ) ) {
-                $ajax_handler->add_error( 'name', 'Name already exists.' );
+                $ajax_handler->add_error( 'name', $settings['msg_name_exists'] );
+            } elseif ( str_contains( $res['body'] , 'Only letters, numbers and dashes are allowed in name' ) ) {
+                $ajax_handler->add_error( 'name', $settings['msg_format_invalid'] );
+            } elseif ( str_contains( $res['body'] , 'Only letters, numbers and dashes are allowed in username' ) ) {
+                $ajax_handler->add_error( 'username', $settings['msg_format_invalid'] );
+            } elseif ( str_contains( $res['body'] , 'Not a valid email' ) ) {
+                $ajax_handler->add_error( 'email', $settings['msg_invalid_email'] );
             } else {
-                $ajax_handler->add_error_message( 'Server error. Please contact system administrator.' );
+                $ajax_handler->add_error_message( $settings['msg_other_error'] );
             }
 			return False;
         }
@@ -165,7 +155,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 				'label' => esc_html__( 'Language', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
 				'description' => esc_html__( 'Enter the default language for the deployed app ("en", "de", ...).', 'elementor-forms-aam-deploy' ),
-				'default' => 'en'
+				'default' => 'en',
 			]
 		);
 
@@ -193,6 +183,42 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 				'label' => esc_html__( 'Add monitoring', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
 				'description' => esc_html__( 'Adds uptime monitoring for the deployment.', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
+			'msg_name_exists',
+			[
+				'label' => esc_html__( 'Name already exists Error', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => 'Name already exists.',
+			]
+		);
+
+		$widget->add_control(
+			'msg_format_invalid',
+			[
+				'label' => esc_html__( 'Invalid format Error', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => 'Only letters, numbers and dashes are allowed.',
+			]
+		);
+
+		$widget->add_control(
+			'msg_invalid_email',
+			[
+				'label' => esc_html__( 'Invalid email Error', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => 'Not a valid email format.',
+			]
+		);
+
+		$widget->add_control(
+			'msg_other_error',
+			[
+				'label' => esc_html__( 'Other Error', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => 'Server error. Please contact system administrator.',
 			]
 		);
 
