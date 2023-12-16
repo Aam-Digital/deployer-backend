@@ -51,6 +51,24 @@ export class AppController {
       throw new BadRequestException('No spaces allowed in arguments');
     }
 
+    if (!deploymentInfo.name.match(/^[a-zA-Z0-9\-]*$/)) {
+      throw new BadRequestException(
+        'Only letters, numbers and dashes are allowed in name',
+      );
+    }
+
+    if (!deploymentInfo.username.match(/^[a-zA-Z0-9\-]*$/)) {
+      throw new BadRequestException(
+        'Only letters, numbers and dashes are allowed in username',
+      );
+    }
+
+    // See https://regex101.com/r/lHs2R3/1
+    const emailRegex = /^[\w\-.]+@([\w-]+\.)+[\w-]{2,}$/;
+    if (!deploymentInfo.email.match(emailRegex)) {
+      throw new BadRequestException('Not a valid email');
+    }
+
     const args = `${deploymentInfo.name} ${deploymentInfo.locale || 'en'} ${
       deploymentInfo.email
     } ${deploymentInfo.username} ${deploymentInfo.base} ${
@@ -80,7 +98,6 @@ export class AppController {
         result.complete();
       }
     });
-
     return result.asObservable();
   }
 }
