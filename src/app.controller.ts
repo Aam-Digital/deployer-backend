@@ -69,11 +69,13 @@ export class AppController {
       throw new BadRequestException('No spaces allowed in arguments');
     }
 
-    const args = `${deploymentInfo.name} ${deploymentInfo.locale || 'en'} ${
-      deploymentInfo.email
-    } ${deploymentInfo.username} ${deploymentInfo.base} ${
+    const args = `${deploymentInfo.name} ${deploymentInfo.base} ${
+      deploymentInfo.locale || 'en'
+    } ${deploymentInfo.email} ${deploymentInfo.username} ${
       deploymentInfo.backend ? 'y' : 'n'
-    } ${deploymentInfo.monitor ? 'y' : 'n'}`;
+    } ${deploymentInfo.queryBackend ? 'y' : 'n'} ${
+      deploymentInfo.monitor ? 'y' : 'n'
+    } ${deploymentInfo.sentry ? 'y' : 'n'}`;
     console.log('args', args);
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);

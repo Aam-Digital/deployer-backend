@@ -43,7 +43,9 @@ describe('AppController', () => {
     clientKey: 'test-key',
     base: 'test-base',
     backend: true,
+    queryBackend: true,
     monitor: false,
+    sentry: false,
   };
 
   beforeEach(async () => {
@@ -174,7 +176,7 @@ describe('AppController', () => {
 
     expect(res).resolves.toBeTruthy();
     expect(mockWs.write).toHaveBeenCalledWith(
-      'test-name de test@mail.com test-username test-base y n',
+      'test-name test-base de test@mail.com test-username y y n n',
     );
     expect(mockWs.close).toHaveBeenCalled();
     // Ensure tail is properly "unwatched"
@@ -185,7 +187,7 @@ describe('AppController', () => {
     const emptyLocale = { ...deploymentData, locale: '' };
     controller.deployApp(emptyLocale).subscribe(() => {
       expect(mockWs.write).toHaveBeenCalledWith(
-        'test-name en test@mail.com test-username test-base y n',
+        'test-name test-base en test@mail.com test-username y y n n',
       );
       done();
     });
@@ -198,7 +200,7 @@ describe('AppController', () => {
     delete noLocale.locale;
     controller.deployApp(noLocale).subscribe(() => {
       expect(mockWs.write).toHaveBeenCalledWith(
-        'test-name en test@mail.com test-username test-base y n',
+        'test-name test-base en test@mail.com test-username y y n n',
       );
       done();
     });
