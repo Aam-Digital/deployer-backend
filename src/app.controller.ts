@@ -75,7 +75,7 @@ export class AppController {
       deploymentInfo.backend ? 'y' : 'n'
     } ${deploymentInfo.queryBackend ? 'y' : 'n'} ${
       deploymentInfo.monitor ? 'y' : 'n'
-    } ${deploymentInfo.sentry ? 'y' : 'n'}`;
+    } ${deploymentInfo.sentry ? 'y' : 'n'}\n`;
     console.log('args', args);
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);
