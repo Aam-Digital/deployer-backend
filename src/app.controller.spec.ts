@@ -176,7 +176,7 @@ describe('AppController', () => {
 
     expect(res).resolves.toBeTruthy();
     expect(mockWs.write).toHaveBeenCalledWith(
-      'test-name test-base de test@mail.com test-username y y n n',
+      'test-name test-base de test@mail.com test-username y y n n\n',
     );
     expect(mockWs.close).toHaveBeenCalled();
     // Ensure tail is properly "unwatched"
@@ -187,7 +187,7 @@ describe('AppController', () => {
     const emptyLocale = { ...deploymentData, locale: '' };
     controller.deployApp(emptyLocale).subscribe(() => {
       expect(mockWs.write).toHaveBeenCalledWith(
-        'test-name test-base en test@mail.com test-username y y n n',
+        'test-name test-base en test@mail.com test-username y y n n\n',
       );
       done();
     });
@@ -200,7 +200,7 @@ describe('AppController', () => {
     delete noLocale.locale;
     controller.deployApp(noLocale).subscribe(() => {
       expect(mockWs.write).toHaveBeenCalledWith(
-        'test-name test-base en test@mail.com test-username y y n n',
+        'test-name test-base en test@mail.com test-username y y n n\n',
       );
       done();
     });
