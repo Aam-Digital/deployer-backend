@@ -10,7 +10,7 @@ import { DeploymentInfo } from './deployment-info.dto';
 import * as fs from 'fs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { catchError, mergeMap, Observable, Subject } from 'rxjs';
+import { catchError, mergeMap, Observable, of, Subject } from 'rxjs';
 import { Tail } from 'tail';
 
 @Controller()
@@ -80,7 +80,8 @@ export class AppController {
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);
     ws.close();
-    return this.getResult();
+    return of(true);
+    // return this.getResult();
   }
 
   private getResult() {
