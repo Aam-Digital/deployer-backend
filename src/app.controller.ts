@@ -81,6 +81,7 @@ export class AppController {
     ws.write(args);
     ws.close();
     return of(true);
+    // TODO: checking logs may take too long and run into timeouts for user-facing form. Therefore deactivated for now.
     // return this.getResult();
   }
 
