@@ -20,6 +20,8 @@ jobs:
           context: ./
           file: ./build/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: aamdigital/deployer-ms:pr-${{ github.event.number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

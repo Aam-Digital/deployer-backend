@@ -29,9 +29,20 @@ export class DeploymentInfo {
   backend: boolean;
 
   @ApiProperty({
+    description:
+      'Whether the am-backend-services (query-backend) should be set up.',
+  })
+  queryBackend = false;
+
+  @ApiProperty({
     description: 'Whether the new system should be added to uptime monitoring.',
   })
   monitor: boolean;
+
+  @ApiProperty({
+    description: 'Whether the new system should be added to sentry monitoring.',
+  })
+  sentry = false;
 
   @ApiProperty({
     description: 'Name of the Keycloak confidential client.',

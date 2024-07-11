@@ -41,7 +41,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 	/**
 	 * Run action.
 	 *
-	 * Submit the data to 
+	 * Submit the data to
 	 *
 	 * @since 1.0.0
 	 * @access public
@@ -72,7 +72,9 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 					'username' => $fields['username'],
 					'email' => $fields['email'],
 					'monitor' => $settings['monitor'] ? True : False,
+					'sentry' => $settings['sentry'] ? True : False,
 					'backend' => $settings['backend'] ? True : False,
+					'queryBackend' => $settings['queryBackend'] ? True : False,
 					'client' => $settings['client'],
 					'clientKey' => $settings['client-key'],
 					'base' => $settings['base'],
@@ -178,11 +180,29 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 		);
 
 		$widget->add_control(
+			'queryBackend',
+			[
+				'label' => esc_html__( 'Add am-backend-services (query-backend)', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'description' => esc_html__( 'Deploys aam-backend-services (e.g. reports).', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
 			'monitor',
 			[
 				'label' => esc_html__( 'Add monitoring', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
 				'description' => esc_html__( 'Adds uptime monitoring for the deployment.', 'elementor-forms-aam-deploy' ),
+			]
+		);
+
+		$widget->add_control(
+			'sentry',
+			[
+				'label' => esc_html__( 'Add sentry monitoring', 'elementor-forms-aam-deploy' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'description' => esc_html__( 'Adds sentry monitoring for the deployment.', 'elementor-forms-aam-deploy' ),
 			]
 		);
 

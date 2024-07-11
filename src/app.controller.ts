@@ -10,7 +10,7 @@ import { DeploymentInfo } from './deployment-info.dto';
 import * as fs from 'fs';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { catchError, mergeMap, Observable, Subject } from 'rxjs';
+import { catchError, mergeMap, Observable, of, Subject } from 'rxjs';
 import { Tail } from 'tail';
 
 @Controller()
@@ -69,16 +69,20 @@ export class AppController {
       throw new BadRequestException('No spaces allowed in arguments');
     }
 
-    const args = `${deploymentInfo.name} ${deploymentInfo.locale || 'en'} ${
-      deploymentInfo.email
-    } ${deploymentInfo.username} ${deploymentInfo.base} ${
+    const args = `${deploymentInfo.name} ${deploymentInfo.base} ${
+      deploymentInfo.locale || 'en'
+    } ${deploymentInfo.email} ${deploymentInfo.username} ${
       deploymentInfo.backend ? 'y' : 'n'
-    } ${deploymentInfo.monitor ? 'y' : 'n'}`;
+    } ${deploymentInfo.queryBackend ? 'y' : 'n'} ${
+      deploymentInfo.monitor ? 'y' : 'n'
+    } ${deploymentInfo.sentry ? 'y' : 'n'}\n`;
     console.log('args', args);
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);
     ws.close();
-    return this.getResult();
+    return of(true);
+    // TODO: checking logs may take too long and run into timeouts for user-facing form. Therefore deactivated for now.
+    // return this.getResult();
   }
 
   private getResult() {
