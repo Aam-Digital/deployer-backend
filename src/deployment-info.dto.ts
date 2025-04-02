@@ -5,7 +5,13 @@ export class DeploymentInfo {
     description:
       'Name of the system to be created. Must not contain whitespaces.',
   })
-  name: string;
+  instance: string;
+
+  @ApiProperty({
+    description:
+      'The prebuilt configuration which should be used as a basis for this app.',
+  })
+  baseConfig: string;
 
   @ApiProperty({
     description: 'Language for the system (and keycloak).',
@@ -15,48 +21,42 @@ export class DeploymentInfo {
   @ApiProperty({
     description: 'Username of the initial user account created as site admin.',
   })
-  username: string;
+  userName: string;
 
   @ApiProperty({
     description: 'Email for the initial user account.',
   })
-  email: string;
+  userEmail: string;
 
   @ApiProperty({
     description:
       'Whether the permission backend (replication-backend) should be set up.',
   })
-  backend: boolean;
+  withReplicationBackend: boolean;
 
   @ApiProperty({
     description:
       'Whether the am-backend-services (query-backend) should be set up.',
   })
-  queryBackend = false;
+  withBackend = false;
 
   @ApiProperty({
     description: 'Whether the new system should be added to uptime monitoring.',
   })
-  monitor: boolean;
+  withMonitoring: boolean;
 
   @ApiProperty({
     description: 'Whether the new system should be added to sentry monitoring.',
   })
-  sentry = false;
+  withSentry = false;
 
   @ApiProperty({
     description: 'Name of the Keycloak confidential client.',
   })
-  client: string;
+  keycloakClientId: string;
 
   @ApiProperty({
     description: 'Credentials for the Keycloak confidential client.',
   })
-  clientKey: string;
-
-  @ApiProperty({
-    description:
-      'The prebuilt configuration which should be used as a basis for this app.',
-  })
-  base: string;
+  keycloakClientSecret: string;
 }

@@ -35,17 +35,17 @@ describe('AppController', () => {
   let mockWs: { write: jest.Mock; close: jest.Mock };
 
   const deploymentData: DeploymentInfo = {
-    name: 'test-name',
+    instance: 'test-name',
     locale: 'de',
-    username: 'test-username',
-    email: 'test@mail.com',
-    client: 'test-client',
-    clientKey: 'test-key',
-    base: 'test-base',
-    backend: true,
-    queryBackend: true,
-    monitor: false,
-    sentry: false,
+    userName: 'test-username',
+    userEmail: 'test@mail.com',
+    keycloakClientId: 'test-client',
+    keycloakClientSecret: 'test-key',
+    baseConfig: 'test-base',
+    withReplicationBackend: true,
+    withBackend: true,
+    withMonitoring: false,
+    withSentry: false,
   };
 
   beforeEach(async () => {
@@ -83,7 +83,7 @@ describe('AppController', () => {
   it('should throw bad request exception if name has wrong format', async () => {
     passDeployment();
     function testName(name: string) {
-      return lastValueFrom(controller.deployApp({ ...deploymentData, name }));
+      return lastValueFrom(controller.deployApp({ ...deploymentData, instance: name }));
     }
     await expect(testName('with space')).rejects.toBeInstanceOf(
       BadRequestException,
@@ -111,7 +111,7 @@ describe('AppController', () => {
     passDeployment();
     function testName(username: string) {
       return lastValueFrom(
-        controller.deployApp({ ...deploymentData, username }),
+        controller.deployApp({ ...deploymentData, userName: username }),
       );
     }
 
@@ -132,7 +132,9 @@ describe('AppController', () => {
   it('should throw bad request exception if email has wrong format', async () => {
     passDeployment();
     function testMail(email: string) {
-      return lastValueFrom(controller.deployApp({ ...deploymentData, email }));
+      return lastValueFrom(
+        controller.deployApp({ ...deploymentData, userEmail: email }),
+      );
     }
 
     await expect(testMail('testmail')).rejects.toBeInstanceOf(
