@@ -16,16 +16,18 @@ import { Tail } from 'tail';
 @Controller()
 export class AppController {
   private keycloakUrl = this.configService.get('KEYCLOAK_URL');
+
   constructor(
     private http: HttpService,
     private configService: ConfigService,
   ) {}
+
   @Post('deploy')
   deployApp(@Body() deploymentInfo: DeploymentInfo) {
     const data = new URLSearchParams();
     data.set('grant_type', 'client_credentials');
-    data.set('client_id', deploymentInfo.client);
-    data.set('client_secret', deploymentInfo.clientKey);
+    data.set('client_id', deploymentInfo.keycloakClientId);
+    data.set('client_secret', deploymentInfo.keycloakClientSecret);
     return this.http
       .post(
         `${this.keycloakUrl}/realms/master/protocol/openid-connect/token`,
@@ -45,13 +47,13 @@ export class AppController {
   private writeCommandsToPipe(deploymentInfo: DeploymentInfo): Observable<any> {
     console.log('info', deploymentInfo);
 
-    if (!deploymentInfo.name.match(/^[a-zA-Z0-9\-]*$/)) {
+    if (!deploymentInfo.instance.match(/^[a-zA-Z0-9\-]*$/)) {
       throw new BadRequestException(
         'Only letters, numbers and dashes are allowed in name',
       );
     }
 
-    if (!deploymentInfo.username.match(/^[a-zA-Z0-9\-]*$/)) {
+    if (!deploymentInfo.userName.match(/^[a-zA-Z0-9\-]*$/)) {
       throw new BadRequestException(
         'Only letters, numbers and dashes are allowed in username',
       );
@@ -59,7 +61,7 @@ export class AppController {
 
     // See https://regex101.com/r/lHs2R3/1
     const emailRegex = /^[\w\-.]+@([\w-]+\.)+[\w-]{2,}$/;
-    if (!deploymentInfo.email.match(emailRegex)) {
+    if (!deploymentInfo.userEmail.match(emailRegex)) {
       throw new BadRequestException('Not a valid email');
     }
 
@@ -69,13 +71,13 @@ export class AppController {
       throw new BadRequestException('No spaces allowed in arguments');
     }
 
-    const args = `${deploymentInfo.name} ${deploymentInfo.base} ${
+    const args = `${deploymentInfo.instance} ${deploymentInfo.baseConfig} ${
       deploymentInfo.locale || 'en'
-    } ${deploymentInfo.email} ${deploymentInfo.username} ${
-      deploymentInfo.backend ? 'y' : 'n'
-    } ${deploymentInfo.queryBackend ? 'y' : 'n'} ${
-      deploymentInfo.monitor ? 'y' : 'n'
-    } ${deploymentInfo.sentry ? 'y' : 'n'}\n`;
+    } ${deploymentInfo.userEmail} ${deploymentInfo.userName} ${
+      deploymentInfo.withReplicationBackend ? 'y' : 'n'
+    } ${deploymentInfo.withBackend ? 'y' : 'n'} ${
+      deploymentInfo.withMonitoring ? 'y' : 'n'
+    } ${deploymentInfo.withSentry ? 'y' : 'n'}\n`;
     console.log('args', args);
     const ws = fs.createWriteStream('dist/assets/arg-pipe');
     ws.write(args);

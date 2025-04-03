@@ -68,20 +68,20 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 					'Content-Type' => 'application/json',
 				],
 				'body' => wp_json_encode([
-					'name' => $fields['name'],
-					'username' => $fields['username'],
-					'email' => $fields['email'],
-					'monitor' => $settings['monitor'] ? True : False,
-					'sentry' => $settings['sentry'] ? True : False,
-					'backend' => $settings['backend'] ? True : False,
-					'queryBackend' => $settings['queryBackend'] ? True : False,
-					'client' => $settings['client'],
-					'clientKey' => $settings['client-key'],
-					'base' => $settings['base'],
+					'instance' => $fields['name'],
+					'userName' => $fields['username'],
+					'userEmail' => $fields['email'],
+					'withMonitoring' => $settings['monitor'] ? True : False,
+					'withSentry' => $settings['sentry'] ? True : False,
+					'withReplicationBackend' => $settings['backend'] ? True : False,
+					'withBackend' => $settings['queryBackend'] ? True : False,
+					'keycloakClientId' => $settings['client'],
+					'keycloakClientSecret' => $settings['client-key'],
+					'baseConfig' => $settings['base'],
 					'locale' => $settings['locale'],
 				]),
 				'httpversion' => '1.0',
-				'timeout' => 60,
+				'timeout' => 120,
 			]
 		);
 
@@ -128,7 +128,7 @@ class AamDeploy extends \ElementorPro\Modules\Forms\Classes\Action_Base {
 			[
 				'label' => esc_html__( 'Remote URL', 'elementor-forms-aam-deploy' ),
 				'type' => \Elementor\Controls_Manager::TEXT,
-				'placeholder' => 'https://deploy.aam-digital.com/deploy',
+				'placeholder' => 'https://deploy.aam-digital.app/deploy',
 				'description' => esc_html__( 'Enter the URL where the deployment server is running.', 'elementor-forms-aam-deploy' ),
 			]
 		);

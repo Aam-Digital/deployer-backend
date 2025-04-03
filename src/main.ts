@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { SentryService } from '@ntegral/nestjs-sentry';
+import * as Sentry from '@sentry/nestjs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,8 +16,20 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   // Logging everything through sentry
-  app.useLogger(SentryService.SentryServiceInstance());
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    debug: false,
+    environment: 'production',
+    release: 'deployer-backend@' + process.env.npm_package_version,
+    initialScope: {
+      tags: {
+        // ID of the docker container in which this is run
+        hostname: process.env.HOSTNAME || 'unknown',
+      },
+    },
+  });
 
   await app.listen(process.env.PORT || 3000);
 }
+
 bootstrap();
