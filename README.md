@@ -1,3 +1,7 @@
+> ⚠️ This project is archived
+> We are working on automated deployments into a Kubernetes cluster through https://github.com/Aam-Digital/platform-admin-services
+---
+
 # Deployer Backend
 
 This server allows to automatically deploy applications on the server.
